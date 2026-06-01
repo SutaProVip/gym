@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lịch Tập PPC/UA – Armwrestling</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --border: #222230;
+    --accent: #e8c84a;
+    --accent2: #c8402a;
+    --accent3: #3a7fd4;
+    --accent4: #3eb87a;
+    --text: #e8e8f0;
+    --muted: #7070a0;
+    --rest: #2a2a3a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .header::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    background: var(--accent);
+    margin: 16px auto 0;
+  }
+  .header .label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 8vw, 72px);
+    letter-spacing: 2px;
+    line-height: 1;
+    color: var(--text);
+  }
+  .header h1 span { color: var(--accent); }
+  .header .sub {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  /* TAB SWITCHER */
+  .tab-bar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .tab-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { color: var(--text); border-color: var(--muted); }
+  .tab-btn.active {
+    background: var(--accent);
+    color: #0a0a0f;
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* NUTRITION PANEL */
+  .nutrition-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .nutri-hero {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  .nutri-hero-text { flex: 1; min-width: 220px; }
+  .nutri-hero-text h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 1px;
+    color: var(--accent4);
+    margin-bottom: 6px;
+  }
+  .nutri-hero-text p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 480px;
+  }
+  .nutri-macros {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .macro-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    text-align: center;
+    min-width: 90px;
+  }
+  .macro-box .m-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    line-height: 1;
+    color: var(--text);
+  }
+  .macro-box .m-unit {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+  .macro-box .m-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    color: var(--muted);
+  }
+  .macro-box.protein .m-val { color: #e8705a; }
+  .macro-box.carb .m-val { color: #e8c84a; }
+  .macro-box.fat .m-val { color: #6aaef0; }
+  .macro-box.cal .m-val { color: var(--accent4); }
+
+  .nutri-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .nutri-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .nutri-card-header {
+    padding: 12px 18px 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nutri-card-header .nh-icon { font-size: 18px; }
+  .nutri-card-header .nh-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 1px;
+  }
+  .nutri-card-header .nh-sub {
+    margin-left: auto;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .nutri-card-body { padding: 14px 18px 18px; }
+
+  .meal-list { list-style: none; }
+  .meal-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .meal-list li:last-child { border-bottom: none; }
+  .meal-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+    background: var(--accent4);
+  }
+  .meal-name { flex: 1; color: var(--text); }
+  .meal-kcal {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .nutri-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .badge-pre  { background: rgba(232,200,74,0.15); color: var(--accent); }
+  .badge-post { background: rgba(62,184,122,0.15); color: #60e090; }
+  .badge-cut  { background: rgba(200,64,42,0.12);  color: #e8705a; }
+
+  .nutri-rule {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .nutri-rule:last-child { border-bottom: none; }
+  .nutri-rule .rule-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  .alert-box {
+    background: rgba(62,184,122,0.07);
+    border: 1px solid rgba(62,184,122,0.2);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #60e090;
+    line-height: 1.7;
+    margin-top: 4px;
+  }
+  .alert-box strong { color: #90ffb0; }
+
+  /* WEEK GRID */
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* DAY CARD */
+  .day-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .day-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .day-card.rest {
+    opacity: 0.55;
+    background: var(--rest);
+  }
+
+  .day-header {
+    padding: 14px 18px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .day-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+  .day-type {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+
+  /* Color theming per day */
+  .push .day-header   { border-left: 4px solid var(--accent2); }
+  .pull .day-header   { border-left: 4px solid var(--accent3); }
+  .armw .day-header   { border-left: 4px solid var(--accent); }
+  .upper .day-header  { border-left: 4px solid var(--accent4); }
+  .core .day-header   { border-left: 4px solid #a060e0; }
+  .rest-day .day-header { border-left: 4px solid var(--muted); }
+
+  .push  .day-type  { background: rgba(200,64,42,0.15);  color: #e8705a; }
+  .pull  .day-type  { background: rgba(58,127,212,0.15); color: #6aaef0; }
+  .armw  .day-type  { background: rgba(232,200,74,0.15); color: var(--accent); }
+  .upper .day-type  { background: rgba(62,184,122,0.15); color: #60e090; }
+  .core  .day-type  { background: rgba(160,96,224,0.15); color: #c080ff; }
+  .rest-day .day-type { background: rgba(112,112,160,0.1); color: var(--muted); }
+
+  .day-body { padding: 16px 18px 20px; }
+
+  .focus-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 14px;
+  }
+  .tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  /* SECTION inside card */
+  .section { margin-bottom: 18px; }
+  .section:last-child { margin-bottom: 0; }
+  .section-title {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .exercise-list { list-style: none; }
+  .exercise-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 13.5px;
+    line-height: 1.4;
+  }
+  .exercise-list li:last-child { border-bottom: none; }
+  .exercise-list li .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .push  .dot { background: var(--accent2); }
+  .pull  .dot { background: var(--accent3); }
+  .armw  .dot { background: var(--accent); }
+  .upper .dot { background: var(--accent4); }
+  .core  .dot { background: #a060e0; }
+
+  .ex-name { flex: 1; color: var(--text); }
+  .ex-sets {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  /* Note box */
+  .note {
+    margin-top: 12px;
+    background: rgba(255,255,255,0.03);
+    border-left: 2px solid var(--muted);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .note strong { color: var(--text); }
+
+  /* REST */
+  .rest-content {
+    padding: 24px 18px;
+    text-align: center;
+    color: var(--muted);
+  }
+  .rest-icon { font-size: 32px; margin-bottom: 8px; }
+  .rest-text { font-size: 13px; line-height: 1.6; }
+
+  /* FOOTER NOTE */
+  .footer-note {
+    max-width: 1200px;
+    margin: 32px auto 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+  .footer-note h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .footer-note ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 6px 24px;
+  }
+  .footer-note ul li {
+    font-size: 12.5px;
+    color: var(--muted);
+    padding: 3px 0;
+    padding-left: 14px;
+    position: relative;
+  }
+  .footer-note ul li::before {
+    content: '—';
+    position: absolute; left: 0;
+    color: var(--accent);
+  }
+</style>
+<style>
+  /* LOGIN SCREEN */
+  #login-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 24px;
+  }
+  #login-screen .login-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 10vw, 80px);
+    letter-spacing: 3px;
+    color: var(--text);
+    line-height: 1;
+    text-align: center;
+  }
+  #login-screen .login-logo span { color: var(--accent); }
+  #login-screen .login-sub {
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 8px;
+    margin-bottom: 48px;
+    text-align: center;
+  }
+  #login-screen .login-name {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+  #login-screen .login-name strong {
+    color: var(--text);
+    font-size: 20px;
+  }
+  .login-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .login-box label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .login-box input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 15px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    letter-spacing: 2px;
+    transition: border-color 0.2s;
+  }
+  .login-box input:focus { border-color: var(--accent); }
+  .login-box input.error { border-color: var(--accent2); }
+  .login-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--accent);
+    color: #0a0a0f;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-top: 4px;
+  }
+  .login-btn:hover { opacity: 0.88; }
+  .login-error {
+    font-size: 12px;
+    color: #e8705a;
+    text-align: center;
+    min-height: 18px;
+    letter-spacing: 1px;
+  }
+  #main-content { display: none; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-logo">PPC / <span>UA</span></div>
+  <div class="login-sub">Chương trình huấn luyện cá nhân</div>
+  <div class="login-name">Xin chào, <strong>Gia Hưng</strong> 👋</div>
+  <div class="login-box">
+    <label>Mật khẩu</label>
+    <input type="password" id="pw-input" placeholder="••••••••••" onkeydown="if(event.key==='Enter')doLogin()" />
+    <div class="login-error" id="login-error"></div>
+    <button class="login-btn" onclick="doLogin()">VÀO LỊCH TẬP</button>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main-content">
+
+<div class="header">
+  <div class="label">Chương trình huấn luyện tuần</div>
+  <h1>PPC / <span>UA</span></h1>
+  <div class="sub">Push · Pull · Core &nbsp;|&nbsp; Upper · Armwrestling</div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('schedule')">🗓 Lịch Tập</button>
+  <button class="tab-btn" onclick="switchTab('nutrition')">🥗 Dinh Dưỡng Cutting</button>
+</div>
+
+<!-- TAB: SCHEDULE -->
+<div id="tab-schedule" class="tab-panel active">
+<div class="week-grid">
+
+  <!-- THỨ 2 – PUSH -->
+  <div class="day-card push">
+    <div class="day-header">
+      <div class="day-name">Thứ Hai</div>
+      <div class="day-type">Push</div>
+    </div>
+    <div class="day-body">
+      <div class="focus-tags">
+        <span class="tag">Ngực</span>
+        <span class="tag">Vai</span>
+        <span class="tag">Triceps</span>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Ngực</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">DB Bench Press</span><span class="ex-sets">4×6–8</span></li>
+          <li><span class="dot"></span><span class="ex-name">High to Low Cable Chest Fly</span><span class="ex-sets">3×12–15</span></li>
+          <li><span class="dot"></span><span class="ex-name">Mid Cable Chest Fly</span><span class="ex-sets">3×12–15</span></li>
+          <li><span class="dot"></span><span class="ex-name">Low to High Cable Chest Fly</span><span class="ex-sets">3×12–15</span></li>
+          <li><span class="dot"></span><span class="ex-name">Pec Deck Fly</span><span class="ex-sets">3×12–15</span></li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Vai</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Lateral Raise</span><span class="ex-sets">4×12–15</span></li>
+          <li><span class="dot"></span><span class="ex-name">Shoulder Press</span><span class="ex-sets">4×8–10</span></li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Tay sau (Triceps)</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Cable Overhead Triceps Extension</span><span class="ex-sets">3×10–12</span></li>
+          <li><span class="dot"></span><span class="ex-name">Triceps Pushdown</span><span class="ex-sets">3×12–15</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- THỨ 3 – PULL -->
+  <div class="day-card pull">
+    <div class="day-header">
+      <div class="day-name">Thứ Ba</div>
+      <div class="day-type">Pull</div>
+    </div>
+    <div class="day-body">
+      <div class="focus-tags">
+        <span class="tag">Lưng (Full)</span>
+        <span class="tag">Vai sau</span>
+        <span class="tag">Biceps</span>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Lưng</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Pull Up</span><span class="ex-sets">4×max</span></li>
+          <li><span class="dot"></span><span class="ex-name">Lat Pulldown</span><span class="ex-sets">3×10–12</span></li>
+          <li><span class="dot"></span><span class="ex-name">Seated Cable Row</span><span class="ex-sets">3×10–12</span></li>
+          <li><span class="dot"></span><span class="ex-name">Deadlift</span><span class="ex-sets">4×4–5</span></li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Vai sau</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Face Pull</span><span class="ex-sets">3×15</span></li>
+          <li><span class="dot"></span><span class="ex-name">Cable Rear Delt Fly</span><span class="ex-sets">3×12–15</span></li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Tay trước (Biceps)</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Spider Curl</span><span class="ex-sets">3×10–12</span></li>
+          <li><span class="dot"></span><span class="ex-name">Hammer Curl</span><span class="ex-sets">3×10–12</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- THỨ 4 – CORE -->
+  <div class="day-card core">
+    <div class="day-header">
+      <div class="day-name">Thứ Tư</div>
+      <div class="day-type">Core</div>
+    </div>
+    <div class="day-body">
+      <div class="focus-tags">
+        <span class="tag">Cơ liên sườn</span>
+        <span class="tag">Oblique</span>
+        <span class="tag">Core sâu</span>
+        <span class="tag">Lưng dưới</span>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Cơ liên sườn & Oblique (Trọng tâm)</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Cable Woodchop (chéo từ trên xuống)</span><span class="ex-sets">4×12–15/bên</span></li>
+          <li><span class="dot"></span><span class="ex-name">Russian Twist (tạ hoặc medicine ball)</span><span class="ex-sets">4×20</span></li>
+          <li><span class="dot"></span><span class="ex-name">Pallof Press (chống xoay)</span><span class="ex-sets">3×12/bên</span></li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Core sâu & Lưng dưới</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Ab Wheel Rollout</span><span class="ex-sets">4×8–12</span></li>
+          <li><span class="dot"></span><span class="ex-name">Side Plank (tĩnh hoặc nâng hông)</span><span class="ex-sets">3×30–40s/bên</span></li>
+          <li><span class="dot"></span><span class="ex-name">Back Extension (hyperextension)</span><span class="ex-sets">3×15</span></li>
+        </ul>
+      </div>
+
+      <div class="note">
+        <strong>Cơ liên sườn:</strong> Cable Woodchop và Russian Twist là hai bài kích thích tốt nhất. Thở ra mạnh khi xoắn để co cơ liên sườn tối đa.
+      </div>
+    </div>
+  </div>
+
+  <!-- THỨ 5 – NGHỈ -->
+  <div class="day-card rest-day rest">
+    <div class="day-header">
+      <div class="day-name">Thứ Năm</div>
+      <div class="day-type">Nghỉ</div>
+    </div>
+    <div class="rest-content">
+      <div class="rest-icon">🛌</div>
+      <div class="rest-text">Nghỉ ngơi & giãn cơ.<br>Xoay khớp vai, cổ tay, hông nhẹ.<br>Ăn đủ protein, ngủ đủ giấc.</div>
+    </div>
+  </div>
+
+  <!-- THỨ 6 – UPPER -->
+  <div class="day-card upper">
+    <div class="day-header">
+      <div class="day-name">Thứ Sáu</div>
+      <div class="day-type">Upper</div>
+    </div>
+    <div class="day-body">
+      <div class="focus-tags">
+        <span class="tag">Ngực</span>
+        <span class="tag">Lưng</span>
+        <span class="tag">Vai</span>
+        <span class="tag">Tay</span>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Push (thể tích vừa)</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Incline DB Press</span><span class="ex-sets">3×8–10</span></li>
+          <li><span class="dot"></span><span class="ex-name">Shoulder Press</span><span class="ex-sets">3×10</span></li>
+          <li><span class="dot"></span><span class="ex-name">Lateral Raise</span><span class="ex-sets">3×12–15</span></li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Pull (thể tích vừa)</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Pull Up hoặc Lat Pulldown</span><span class="ex-sets">3×8–10</span></li>
+          <li><span class="dot"></span><span class="ex-name">Cable Row (hẹp tay)</span><span class="ex-sets">3×10</span></li>
+          <li><span class="dot"></span><span class="ex-name">Face Pull</span><span class="ex-sets">3×15</span></li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Tay (Bổ trợ AW)</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Hammer Curl</span><span class="ex-sets">3×10–12</span></li>
+          <li><span class="dot"></span><span class="ex-name">Triceps Pushdown</span><span class="ex-sets">3×12</span></li>
+        </ul>
+      </div>
+
+      <div class="note">
+        <strong>Lưu ý:</strong> Cường độ trung bình, không cần đẩy PR. Giữ form chuẩn, tập trung Mind-Muscle Connection. Cơ thể cần tươi sáng cho ngày AW thứ 7.
+      </div>
+    </div>
+  </div>
+
+  <!-- THỨ 7 – ARMWRESTLING -->
+  <div class="day-card armw">
+    <div class="day-header">
+      <div class="day-name">Thứ Bảy</div>
+      <div class="day-type">Armwrestling</div>
+    </div>
+    <div class="day-body">
+      <div class="focus-tags">
+        <span class="tag">Hook</span>
+        <span class="tag">Top Roll</span>
+        <span class="tag">Cổ tay</span>
+        <span class="tag">Ngón tay</span>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Hook – Pronation & Cup</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Cable Hammer Curl</span><span class="ex-sets">4×10–12</span></li>
+          <li><span class="dot"></span><span class="ex-name">Wrist Curl (úp tay)</span><span class="ex-sets">4×12–15</span></li>
+          <li><span class="dot"></span><span class="ex-name">Pronation Curl (DB xoay vào trong)</span><span class="ex-sets">4×10–12</span></li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Top Roll – Supination & Kéo ngón</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Supination Curl (DB xoay ra ngoài)</span><span class="ex-sets">4×10–12</span></li>
+          <li><span class="dot"></span><span class="ex-name">Finger Curl (barbell, cuộn ngón)</span><span class="ex-sets">4×12–15</span></li>
+          <li><span class="dot"></span><span class="ex-name">Pinch Grip (kẹp đĩa tạ)</span><span class="ex-sets">4×20–30s</span></li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Cổ tay & Ngón tay chuyên biệt</div>
+        <ul class="exercise-list">
+          <li><span class="dot"></span><span class="ex-name">Gripper (lò xo tay)</span><span class="ex-sets">5×max reps</span></li>
+          <li><span class="dot"></span><span class="ex-name">Finger Extension (band chun)</span><span class="ex-sets">3×20 — BẮT BUỘC</span></li>
+        </ul>
+      </div>
+
+      <div class="note">
+        <strong>Thứ tự tập:</strong> Hook trước (pronation/cup) → Top Roll sau (supination/ngón) → Kết thúc bắt buộc bằng Finger Extension để phòng viêm gân. Ưu tiên kỹ thuật hơn tạ nặng.
+      </div>
+    </div>
+  </div>
+
+  <!-- CHỦ NHẬT – NGHỈ -->
+  <div class="day-card rest-day rest">
+    <div class="day-header">
+      <div class="day-name">Chủ Nhật</div>
+      <div class="day-type">Nghỉ</div>
+    </div>
+    <div class="rest-content">
+      <div class="rest-icon">⚡</div>
+      <div class="rest-text">Phục hồi tích cực.<br>Massage, foam roll, giãn cơ.<br>Nạp carb đủ cho tuần mới.</div>
+    </div>
+  </div>
+
+</div><!-- end week-grid -->
+</div><!-- end tab-schedule -->
+
+<!-- TAB: NUTRITION -->
+<div id="tab-nutrition" class="tab-panel">
+<div class="nutrition-wrap">
+
+  <!-- HERO MACROS -->
+  <div class="nutri-hero">
+    <div class="nutri-hero-text">
+      <h2>Cutting Thông Minh</h2>
+      <p>Mục tiêu: giảm mỡ, giữ cơ, <strong style="color:var(--text)">vẫn đủ năng lượng làm việc chiều</strong>. Công thức: thâm hụt calo <strong style="color:var(--text)">nhỏ (–300 đến –400 kcal/ngày)</strong>, protein cao, carb định thời theo buổi tập sáng. Không nhịn đói, không cắt carb hoàn toàn.</p>
+    </div>
+    <div class="nutri-macros">
+      <div class="macro-box protein">
+        <div class="m-val">2.2</div>
+        <div class="m-unit">g/kg</div>
+        <div class="m-label">Protein</div>
+      </div>
+      <div class="macro-box carb">
+        <div class="m-val">2.5</div>
+        <div class="m-unit">g/kg</div>
+        <div class="m-label">Carb</div>
+      </div>
+      <div class="macro-box fat">
+        <div class="m-val">0.8</div>
+        <div class="m-unit">g/kg</div>
+        <div class="m-label">Fat</div>
+      </div>
+      <div class="macro-box cal">
+        <div class="m-val">–350</div>
+        <div class="m-unit">kcal/ngày</div>
+        <div class="m-label">Thâm hụt</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEAL PLAN GRID -->
+  <div class="nutri-grid">
+
+    <!-- BỮA PRE-WORKOUT -->
+    <div class="nutri-card">
+      <div class="nutri-card-header">
+        <span class="nh-icon">⚡</span>
+        <span class="nh-title">Bữa Sáng Sớm (7:30–8:00)</span>
+        <span class="nh-sub nutri-badge badge-pre">Pre</span>
+      </div>
+      <div class="nutri-card-body">
+        <ul class="meal-list">
+          <li><span class="meal-dot"></span><span class="meal-name">Cơm trắng hoặc yến mạch (50–70g khô)</span><span class="meal-kcal">~200 kcal</span></li>
+          <li><span class="meal-dot"></span><span class="meal-name">Trứng luộc 2–3 quả (hoặc ức gà 100g)</span><span class="meal-kcal">~150 kcal</span></li>
+          <li><span class="meal-dot"></span><span class="meal-name">Chuối 1 quả (nếu tập nặng)</span><span class="meal-kcal">~90 kcal</span></li>
+          <li><span class="meal-dot"></span><span class="meal-name">Cà phê đen (không đường)</span><span class="meal-kcal">~5 kcal</span></li>
+        </ul>
+        <div class="note" style="margin-top:10px">
+          <strong>Mục đích:</strong> Nạp glycogen ngắn hạn để tập tốt, không quá no gây nặng bụng. Ăn trước tập 30–45 phút.
+        </div>
+      </div>
+    </div>
+
+    <!-- BỮA POST-WORKOUT -->
+    <div class="nutri-card">
+      <div class="nutri-card-header">
+        <span class="nh-icon">💪</span>
+        <span class="nh-title">Bữa Sau Tập (11:00–11:30)</span>
+        <span class="nh-sub nutri-badge badge-post">Post</span>
+      </div>
+      <div class="nutri-card-body">
+        <ul class="meal-list">
+          <li><span class="meal-dot"></span><span class="meal-name">Protein shake (whey 25–30g)</span><span class="meal-kcal">~130 kcal</span></li>
+          <li><span class="meal-dot"></span><span class="meal-name">Cơm trắng 150–200g (chín)</span><span class="meal-kcal">~250 kcal</span></li>
+          <li><span class="meal-dot"></span><span class="meal-name">Thịt nạc / cá / tôm (150g)</span><span class="meal-kcal">~200 kcal</span></li>
+          <li><span class="meal-dot"></span><span class="meal-name">Rau xanh tự do (bông cải, cải, rau muống)</span><span class="meal-kcal">~30 kcal</span></li>
+        </ul>
+        <div class="note" style="margin-top:10px">
+          <strong>Quan trọng nhất ngày:</strong> Nạp protein + carb trong vòng 30–60' sau tập. Đây là bữa carb cao nhất trong ngày — hoàn toàn hợp lý khi cutting.
+        </div>
+      </div>
+    </div>
+
+    <!-- BỮA TRƯA / TRƯỚC LÀM VIỆC -->
+    <div class="nutri-card">
+      <div class="nutri-card-header">
+        <span class="nh-icon">🌤</span>
+        <span class="nh-title">Bữa Trưa (13:00–14:00)</span>
+        <span class="nh-sub" style="color:var(--muted);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-left:auto">Duy trì</span>
+      </div>
+      <div class="nutri-card-body">
+        <ul class="meal-list">
+          <li><span class="meal-dot"></span><span class="meal-name">Protein (ức gà, cá hồi, thịt bò nạc) 120–150g</span><span class="meal-kcal">~180 kcal</span></li>
+          <li><span class="meal-dot"></span><span class="meal-name">Cơm hoặc khoai lang 100g (chín) — giảm so với post</span><span class="meal-kcal">~130 kcal</span></li>
+          <li><span class="meal-dot"></span><span class="meal-name">Rau + dầu olive / bơ 1/4 quả</span><span class="meal-kcal">~80 kcal</span></li>
+        </ul>
+        <div class="note" style="margin-top:10px">
+          <strong>Mẹo không buồn ngủ chiều:</strong> Giảm tinh bột bữa trưa xuống còn 50% so với bữa post-workout. Ưu tiên chất béo lành mạnh (bơ, dầu olive) để duy trì năng lượng ổn định.
+        </div>
+      </div>
+    </div>
+
+    <!-- BỮA CHIỀU / SNACK -->
+    <div class="nutri-card">
+      <div class="nutri-card-header">
+        <span class="nh-icon">☕</span>
+        <span class="nh-title">Bữa Xế (15:30–16:00)</span>
+        <span class="nh-sub" style="color:var(--muted);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-left:auto">Snack</span>
+      </div>
+      <div class="nutri-card-body">
+        <ul class="meal-list">
+          <li><span class="meal-dot"></span><span class="meal-name">Khoai lang 1 củ nhỏ (150g)</span><span class="meal-kcal">~135 kcal</span></li>
+          <li><span class="meal-dot"></span><span class="meal-name">2 quả trứng luộc</span><span class="meal-kcal">~140 kcal</span></li>
+        </ul>
+        <div class="note" style="margin-top:10px">
+          Khoai lang cung cấp carb chậm giúp no lâu, trứng bổ sung protein giữ cơ. Tổng ~275 kcal, vừa đủ để không đói cồn cào buổi tối dẫn đến ăn bù. Dễ kiếm, rẻ, hiệu quả không kém snack đắt tiền.
+        </div>
+      </div>
+    </div>
+
+    <!-- BỮA TỐI -->
+    <div class="nutri-card">
+      <div class="nutri-card-header">
+        <span class="nh-icon">🌙</span>
+        <span class="nh-title">Bữa Tối (19:00–20:00)</span>
+        <span class="nh-sub nutri-badge badge-cut">Low Carb</span>
+      </div>
+      <div class="nutri-card-body">
+        <ul class="meal-list">
+          <li><span class="meal-dot"></span><span class="meal-name">Protein nạc (cá, trứng, đậu phụ, ức gà) 150–180g</span><span class="meal-kcal">~220 kcal</span></li>
+          <li><span class="meal-dot"></span><span class="meal-name">Rau xanh nhiều loại (xào hoặc luộc)</span><span class="meal-kcal">~50 kcal</span></li>
+          <li><span class="meal-dot"></span><span class="meal-name">Không tinh bột <em>(hoặc tối đa 50g cơm nếu đói)</em></span><span class="meal-kcal">0–70 kcal</span></li>
+        </ul>
+        <div class="note" style="margin-top:10px">
+          <strong>Carb cycling:</strong> Buổi tối ít carb nhất giúp cơ thể đốt mỡ qua đêm, nhưng không gây thiếu hụt nghiêm trọng vì bạn đã nạp đủ ban ngày.
+        </div>
+      </div>
+    </div>
+
+    <!-- BỮA TRƯỚC NGỦ -->
+    <div class="nutri-card">
+      <div class="nutri-card-header">
+        <span class="nh-icon">😴</span>
+        <span class="nh-title">Trước Ngủ (21:30–22:00)</span>
+        <span class="nh-sub" style="color:var(--muted);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-left:auto">Casein</span>
+      </div>
+      <div class="nutri-card-body">
+        <ul class="meal-list">
+          <li><span class="meal-dot"></span><span class="meal-name">Đậu phụ (150g)</span><span class="meal-kcal">~120 kcal</span></li>
+          <li><span class="meal-dot"></span><span class="meal-name"><em>Hoặc:</em> 2 quả trứng luộc + sữa tươi không đường (200ml)</span><span class="meal-kcal">~240 kcal</span></li>
+        </ul>
+        <div class="note" style="margin-top:10px">
+          Đậu phụ hoặc trứng + sữa tiêu hóa chậm, nuôi dưỡng cơ bắp suốt đêm mà không tăng mỡ. Tổng ~120–240 kcal tùy chọn. Đặc biệt quan trọng sau ngày tập AW và ngày tập nặng để cơ tay phục hồi tốt hơn.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end nutri-grid -->
+
+  <!-- NGUYÊN TẮC CUTTING + LÀM VIỆC CHIỀU -->
+  <div class="nutri-card" style="margin-bottom:16px">
+    <div class="nutri-card-header">
+      <span class="nh-icon">⚖️</span>
+      <span class="nh-title">Nguyên Tắc Cutting Không Mệt Mỏi</span>
+    </div>
+    <div class="nutri-card-body">
+      <div class="nutri-rule"><span class="rule-icon">📉</span><span>Thâm hụt <strong>–300 đến –400 kcal/ngày</strong> là vùng an toàn: giảm mỡ đủ nhanh (~0.3–0.5kg/tuần) mà không làm mất cơ hay gây mệt mỏi kinh niên.</span></div>
+      <div class="nutri-rule"><span class="rule-icon">🍚</span><span><strong>Carb không phải kẻ thù</strong> — chỉ cần định thời: cao trước và sau tập sáng, thấp dần vào chiều tối. Không cắt carb hoàn toàn sẽ giúp não hoạt động tốt khi đi làm buổi chiều.</span></div>
+      <div class="nutri-rule"><span class="rule-icon">🥩</span><span>Protein <strong>2–2.2g/kg</strong> mỗi ngày là lá chắn bảo vệ cơ bắp trong quá trình cutting, đặc biệt khi tập AW nặng tay và ngón.</span></div>
+      <div class="nutri-rule"><span class="rule-icon">💧</span><span>Uống đủ <strong>3–3.5L nước/ngày</strong>. Mất nước là nguyên nhân số 1 gây mệt mỏi, giảm tập trung và hiệu suất làm việc — không phải do cutting.</span></div>
+      <div class="nutri-rule"><span class="rule-icon">🚫</span><span>Tránh thâm hụt calo đột ngột <strong>trên –600 kcal/ngày</strong>. Cơ thể sẽ cảm thấy lờ đờ, giảm testosterone, mất sức kéo tay.</span></div>
+      <div class="nutri-rule"><span class="rule-icon">📅</span><span><strong>Refeed day</strong> 1 lần/tuần (thường Chủ Nhật): ăn đủ TDEE hoặc nhỉnh hơn một chút, nhiều carb. Giúp hồi phục leptin, tránh plateau và giữ tinh thần tập luyện.</span></div>
+    </div>
+  </div>
+
+  <div class="alert-box">
+    <strong>✅ Về việc làm chiều không bị mệt:</strong> Nếu bạn ăn đủ bữa post-workout lúc 11h và bữa trưa lúc 13–14h với carb vừa phải, cơ thể hoàn toàn đủ năng lượng cho buổi làm việc chiều. Cảm giác mệt thường đến từ việc <strong>cắt calo quá mạnh hoặc bỏ bữa</strong>, không phải từ việc tập gym buổi sáng. Theo lịch này, bạn hoàn toàn có thể cutting hiệu quả mà vẫn tỉnh táo cả ngày.
+  </div>
+
+</div><!-- end nutrition-wrap -->
+</div><!-- end tab-nutrition -->
+
+<div id="tab-footer" class="footer-note" style="max-width:1200px;margin:32px auto 0">
+  <h3>Lưu ý chung & Nguyên tắc tập</h3>
+  <ul>
+    <li>Khởi động 5–10 phút trước mỗi buổi (xoay khớp, cardio nhẹ)</li>
+    <li>Tăng tạ dần (Progressive Overload) mỗi 1–2 tuần</li>
+    <li>Thứ 4 AW: ưu tiên kỹ thuật hơn tạ nặng, tránh chấn thương gân</li>
+    <li>Finger Extension là BẮT BUỘC sau mỗi buổi AW để phòng viêm gân</li>
+    <li>Protein: 1.8–2.2g/kg cân nặng mỗi ngày</li>
+    <li>Ngủ đủ 7–9 giờ, đây là thời gian cơ phát triển thực sự</li>
+    <li>Cổ tay & ngón tay: nếu đau nhói, dừng ngay, không tập cố</li>
+    <li>Thứ 6 Upper: cường độ vừa phải, không cần đẩy nặng tối đa</li>
+  </ul>
+</div>
+
+</div><!-- end tab-footer -->
+
+</div><!-- end main-content -->
+
+<script>
+const CORRECT_PW = 'giahung1424';
+
+function doLogin() {
+  const val = document.getElementById('pw-input').value;
+  const errEl = document.getElementById('login-error');
+  const input = document.getElementById('pw-input');
+  if (val === CORRECT_PW) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+  } else {
+    input.classList.add('error');
+    errEl.textContent = 'Sai mật khẩu, thử lại nhé!';
+    input.value = '';
+    setTimeout(() => { input.classList.remove('error'); errEl.textContent = ''; }, 2000);
+  }
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+  document.getElementById('tab-footer').style.display = name === 'schedule' ? 'block' : 'none';
+}
+
+// Auto focus password input
+window.onload = () => document.getElementById('pw-input').focus();
+</script>
+
+</body>
+</html>
